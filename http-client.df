@@ -1,0 +1,24 @@
+## Define a Builder stage and build app inside it
+FROM golang:1-alpine as builder
+
+# Install CA Certificates
+RUN apk update && apk add ca-certificates
+
+ENV HTTP_CLIENT_SRC=$GOPATH/src/dia/http-client/
+
+COPY . $HTTP_CLIENT_SRC
+WORKDIR $HTTP_CLIENT_SRC
+
+# Build HTTP Client
+RUN go build -v -ldflags="-w -s" -o /go/bin/http-client
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o /go/bin/http-client
+#RUN /go/bin/http-client
+
+## Define a stage to build a runtime image.
+FROM scratch
+ENV PATH="/bin"
+# Copy CA certificates and application binary from builder stage
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /go/bin/http-client /http-client
+#COPY --from=builder /go/bin/dne /http-client
+ENTRYPOINT ["/http-client"]
