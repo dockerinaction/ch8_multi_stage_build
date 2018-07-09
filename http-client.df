@@ -11,12 +11,11 @@ COPY . $HTTP_CLIENT_SRC
 WORKDIR $HTTP_CLIENT_SRC
 
 # Build HTTP Client
-RUN go build -v -ldflags="-w -s" -o /go/bin/http-client
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o /go/bin/http-client
 
 #################################################
 # Define a stage to build a runtime image.
-FROM scratch
+FROM scratch as runtime
 ENV PATH="/bin"
 # Copy CA certificates and application binary from builder stage
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
