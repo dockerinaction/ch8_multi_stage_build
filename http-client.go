@@ -7,7 +7,7 @@ import "io/ioutil"
 import "fmt"
 
 func main() {
-	resp, err := http.Get("https://google.com/search?q=docker")
+	resp, err := http.Get("https://raw.githubusercontent.com/skuenzli/ch8_multi_stage_build/master/http-client.go")
 	if err != nil {
 		panic(err)
 	}
