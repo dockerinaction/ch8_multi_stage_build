@@ -14,4 +14,5 @@ Run the resulting image with:
 docker container run --rm -it dockerinaction/http-client:latest
 ```
 
-The http-client program will search google for 'docker' and print the initial output for the page.
+The http-client program will retrieve its own source code from GitHub.
+
